@@ -7,10 +7,13 @@ The main purpose of this repository is to provide AI tools for supporting cancer
 
 args:
 
+project-name
+dataset-dir
 model
 batch
 lr
-dataset-ratio
 epochs
+dataset-ratio
+
 
 
