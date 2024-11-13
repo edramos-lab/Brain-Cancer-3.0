@@ -149,6 +149,10 @@ def train_and_evaluate(args):
             train_f1 = f1_score(all_labels, all_outputs, average='binary')
 
             wandb.log({
+                "Model": args.model,
+                "Batch Size": args.batch,
+                "Initial Learning Rate": args.lr,
+                "Dataset Ratio": args.dataset_ratio,
                 "Fold": fold + 1,
                 "Epoch": epoch + 1,
                 "Loss": running_loss / len(train_loader),
@@ -156,7 +160,7 @@ def train_and_evaluate(args):
                 "Precision": train_precision,
                 "Recall": train_recall,
                 "F1 Score": train_f1,
-                "Learning Rate": optimizer.param_groups[0]['lr']
+                "Final Learning Rate": optimizer.param_groups[0]['lr']
             })
 
             model.eval()
