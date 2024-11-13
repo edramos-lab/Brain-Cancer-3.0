@@ -112,8 +112,7 @@ def train_and_evaluate(args):
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     criterion = nn.CrossEntropyLoss()
 
-    num_folds = 3
-    kf = KFold(n_splits=num_folds, shuffle=True, random_state=42)
+    kf = KFold(n_splits=args.k_folds, shuffle=True, random_state=42)
 
     for fold, (train_idx, val_idx) in enumerate(kf.split(train_subset)):
         wandb.init(project=args.project_name)
@@ -242,6 +241,7 @@ if __name__ == "__main__":
     parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
     parser.add_argument('--epochs', type=int, default=10, help='Number of epochs')
     parser.add_argument('--dataset-ratio', type=float, default=0.3, help='Ratio of the dataset to use for training and testing')
+    parser.add_argument('--k-folds', type=int, default=3, help='Number of k-folds for cross-validation')
 
     args = parser.parse_args()
     train_and_evaluate(args)
