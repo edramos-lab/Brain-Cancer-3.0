@@ -351,7 +351,7 @@ def train_and_evaluate(args):
             # Tomar la primera imagen del batch para hacer la predicción
             #input_image = input_image[0].unsqueeze(0)  # Seleccionamos solo una imagen del batch
             # Extraer una imagen por clase contenida en test_loader
-            class_images = {0: None, 1: None}  # Diccionario para almacenar una imagen por clase
+            class_images = {0: None, 1: None}  # Diccionario para almacenar una imagen por clase, in case multi class, change to N classes as required.
             for images, labels in test_loader:
                 for img, lbl in zip(images, labels):
                     if class_images[lbl.item()] is None:
