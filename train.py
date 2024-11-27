@@ -356,9 +356,9 @@ def train_and_evaluate(args):
                 for img, lbl in zip(images, labels):
                     if class_images[lbl.item()] is None:
                         class_images[lbl.item()] = img.unsqueeze(0)  # Añadir dimensión de batch
-                    if all(class_images.values()):  # Si ya tenemos una imagen de cada clase, salir del bucle
+                    if all(value is not None for value in class_images.values()):  # Si ya tenemos una imagen de cada clase, salir del bucle
                         break
-                if all(class_images.values()):  # Si ya tenemos una imagen de cada clase, salir del bucle
+                if all(value is not None for value in class_images.values()):  # Si ya tenemos una imagen de cada clase, salir del bucle
                     break
 
             # Registrar los hooks en el modelo
