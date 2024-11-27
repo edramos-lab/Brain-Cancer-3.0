@@ -346,18 +346,38 @@ def train_and_evaluate(args):
               # **Grad-CAM después de la evaluación del fold completo**
             print(f"Generando Grad-CAM para una imagen del Fold {fold + 1}...")
             # Seleccionar una imagen de prueba para Grad-CAM (usaremos el DataLoader de test)
-            input_image, label = next(iter(test_loader))  # Obtener una imagen del DataLoader de test
-            input_image = input_image.to(device)
+            #input_image, label = next(iter(test_loader))  # Obtener una imagen del DataLoader de test
+            #input_image = input_image.to(device)
             # Tomar la primera imagen del batch para hacer la predicción
-            input_image = input_image[0].unsqueeze(0)  # Seleccionamos solo una imagen del batch
+            #input_image = input_image[0].unsqueeze(0)  # Seleccionamos solo una imagen del batch
+            # Extraer una imagen por clase contenida en test_loader
+            class_images = {0: None, 1: None}  # Diccionario para almacenar una imagen por clase
+            for images, labels in test_loader:
+                for img, lbl in zip(images, labels):
+                    if class_images[lbl.item()] is None:
+                        class_images[lbl.item()] = img.unsqueeze(0)  # Añadir dimensión de batch
+                    if all(class_images.values()):  # Si ya tenemos una imagen de cada clase, salir del bucle
+                        break
+                if all(class_images.values()):  # Si ya tenemos una imagen de cada clase, salir del bucle
+                    break
+
             # Registrar los hooks en el modelo
             activations = register_hooks(model)
+            class_names = ['LGG', 'HGG']
+            for class_idx, class_name in enumerate(class_names):
+                print(f"Generando Grad-CAM para la clase: {class_name} (índice {class_idx})")
+                grad_cam_map = generate_grad_cam(model, class_images[class_idx], pred_class=class_idx, activations=activations, device=device)
+                # Mostrar el Grad-CAM
+                show_grad_cam(grad_cam_map, class_images[class_idx], colormap=cv2.COLORMAP_JET)
+            # Registrar los hooks en el modelo
+            '''activations = register_hooks(model)
             class_names = ['LGG', 'HGG']
             for class_idx, class_name in enumerate(class_names):
                 print(f"Generando Grad-CAM para la clase: {class_name} (índice {class_idx})")
                 grad_cam_map = generate_grad_cam(model, input_image, pred_class=class_idx, activations=activations, device=device)
                 # Mostrar el Grad-CAM
                 show_grad_cam(grad_cam_map, input_image, colormap=cv2.COLORMAP_JET)
+            '''
             plt.figure(figsize=(6, 6))
             sns.heatmap(test_cm, annot=True, fmt='d', cmap='Blues', cbar=False, xticklabels=['Low Grade', 'High Grade'], yticklabels=['Low Grade', 'High Grade'])
             plt.title(f'Test Confusion Matrix for Fold {fold + 1}')
