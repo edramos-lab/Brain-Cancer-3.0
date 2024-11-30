@@ -390,7 +390,7 @@ def train_and_evaluate(args):
         wandb.finish()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Train a model on the BRATS dataset.')
+    parser = argparse.ArgumentParser(description='Train a model on the dataset.')
     parser.add_argument('--project_name', type=str, required=True, help='WandB project name')
     parser.add_argument('--dataset_dir', type=str, required=True, help='Directory of the dataset')
     parser.add_argument('--model', type=str, default='efficientnet_b0', help='Model name')
