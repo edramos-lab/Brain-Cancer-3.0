@@ -231,7 +231,7 @@ def train_and_evaluate(args):
     kf = KFold(n_splits=args.k_folds, shuffle=True, random_state=42)
 
     for fold, (train_idx, val_idx) in enumerate(kf.split(train_subset)):
-        wandb.init(project=args.project_name)
+        wandb.init(project=args.project_name, entity=args.team_name)
 
         train_fold_subset = Subset(train_subset, train_idx)
         val_fold_subset = Subset(train_subset, val_idx)
@@ -387,6 +387,18 @@ def train_and_evaluate(args):
             plt.tight_layout()
             plt.show()
 
+        # Save model as .pt file
+        model_path = f"model_fold_{fold + 1}.pt"
+        torch.save(model.state_dict(), model_path)
+        
+        # Log model to wandb as artifact
+        artifact = wandb.Artifact(f"model_fold_{fold + 1}", type="model")
+        artifact.add_file(model_path)
+        wandb.log_artifact(artifact)
+        
+        # Also save to wandb run directory
+        wandb.save(model_path)
+
         wandb.finish()
 
 if __name__ == "__main__":
@@ -399,6 +411,7 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', type=int, default=10, help='Number of epochs')
     parser.add_argument('--dataset_ratio', type=float, default=0.3, help='Ratio of the dataset to use for training and testing')
     parser.add_argument('--k_folds', type=int, default=3, help='Number of k-folds for cross-validation')
+    parser.add_argument('--team_name', type=str, default='computervision', help='WandB team name')
 
     args = parser.parse_args()
     train_and_evaluate(args)
