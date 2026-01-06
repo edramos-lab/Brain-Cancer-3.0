@@ -239,7 +239,7 @@ def train_and_evaluate(args):
         train_loader = DataLoader(train_fold_subset, batch_size=args.batch, shuffle=True)
         val_loader = DataLoader(val_fold_subset, batch_size=args.batch, shuffle=False)
 
-        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=3, verbose=False)
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=3)
 
         for epoch in range(args.epochs):
             model.train()
