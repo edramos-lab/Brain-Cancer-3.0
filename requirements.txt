@@ -1,4 +1,9 @@
 timm
 wandb
 torchinfo
-matplotlib 
+matplotlib
+flask
+werkzeug
+opencv-python
+numpy
+tritonclient[http] 
